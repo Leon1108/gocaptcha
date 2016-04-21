@@ -70,6 +70,8 @@ func CreateCaptchaFromConfigFile(configFile string) (*Captcha, error) {
 }
 
 //GetTextWithKey 使用指定key来存储验证码，并返回验证码的内容。
+// 				 注意：如果只是想获取某个Key所对应的验证码，则应该使用 GetText 方法。
+// 					  如果使用相同的Key调用 GetTextWithKey 方法，则会生成新的验证码覆盖之前的值。
 func (captcha *Captcha) GetTextWithKey(key string, length int) (string, error) {
 	var retErr error
 	text, err := captcha.wordManager.Get(length)
