@@ -12,13 +12,14 @@ var storeCreators = map[string]func(*StoreConfig) (StoreInterface, error){}
 type StoreInterface interface {
 	Get(key string) *CaptchaInfo
 	Add(captcha *CaptchaInfo) string
+	AddWithKey(key string, captcha *CaptchaInfo)
 	Update(key string, captcha *CaptchaInfo) bool
 	Del(key string)
 	Destroy()
 	OnConstruct()
 	OnDestruct()
 }
-
+ 
 func RegisterStore(name string, f func(*StoreConfig) (StoreInterface, error)) bool {
 	if _, has := storeCreators[name]; has {
 		return false

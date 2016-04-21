@@ -69,14 +69,20 @@ func (this *CaptchaRedisStore) Add(captcha *CaptchaInfo) string {
 	key = hex.EncodeToString(md5.New().Sum([]byte(key)))
 	key = key[:32]
 
+	this.AddWithKey(key, captcha)
+	
+	return key
+}
+
+func (this *CaptchaRedisStore) AddWithKey(key string, captcha *CaptchaInfo){
 	val, err := this.encodeCaptchaInfo(captcha)
 	if err == nil {
 		if seterr := this.stg.SetEx(key, this.lifeTime, string(val)); seterr != nil {
 			log.Printf("add key in redis error:%s", seterr)
 		}
 	}
-	return key
 }
+
 
 func (this *CaptchaRedisStore) Update(key string, captcha *CaptchaInfo) bool {
 	val, err := this.encodeCaptchaInfo(captcha)

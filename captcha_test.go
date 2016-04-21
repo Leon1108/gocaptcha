@@ -25,6 +25,26 @@ func TestCaptcha(t *testing.T) {
 
 }
 
+func TestGetTextWithKey(t *testing.T){
+	captcha, err := getCaptcha()
+	if nil != err {
+		t.Fatalf("getCaptcha Error:%s", err.Error())
+	}
+	
+	key := "18612342300"
+	text, err := captcha.GetTextWithKey(key, 4)
+	if nil != err {
+		t.Fatalf("GetTextWithKey Error:%s", err.Error())
+	}
+	t.Logf("Text: %v", text)
+	
+	text, err = captcha.GetText(key)
+	if nil != err {
+		t.Fatalf("GetKey Error:%s", err.Error())
+	}
+	t.Logf("GetText: %v", text)
+}
+
 func BenchmarkCaptcha(t *testing.B) {
 	captcha, err := getCaptcha()
 	if nil != err {

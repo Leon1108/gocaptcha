@@ -57,6 +57,12 @@ func (store *CStore) Add(captcha *CaptchaInfo) string {
 	return key
 }
 
+func (store *CStore) AddWithKey(key string, captcha *CaptchaInfo) {
+	store.mu.Lock()
+	defer store.mu.Unlock()
+	store.data[key] = captcha
+}
+
 //Update captcha info
 func (store *CStore) Update(key string, captcha *CaptchaInfo) bool {
 	store.mu.Lock()

@@ -47,13 +47,7 @@ func (store *MCStore) Get(key string) *CaptchaInfo {
 	return ret
 }
 
-//Add captcha info and get the auto generated key
-func (store *MCStore) Add(captcha *CaptchaInfo) string {
-
-	key := fmt.Sprintf("%s%s%x", captcha.Text, randStr(20), time.Now().UnixNano())
-	key = hex.EncodeToString(md5.New().Sum([]byte(key)))
-	key = key[:32]
-
+func (store *MCStore) AddWithKey(key string, captcha *CaptchaInfo) {
 	item := new(memcache.Item)
 	item.Key = MC_KEY_PREFIX + key
 	item.Value = store.encodeValue(captcha)
@@ -63,6 +57,16 @@ func (store *MCStore) Add(captcha *CaptchaInfo) string {
 	if nil != err {
 		log.Printf("add key in memcache err:%s", err)
 	}
+}
+
+//Add captcha info and get the auto generated key
+func (store *MCStore) Add(captcha *CaptchaInfo) string {
+
+	key := fmt.Sprintf("%s%s%x", captcha.Text, randStr(20), time.Now().UnixNano())
+	key = hex.EncodeToString(md5.New().Sum([]byte(key)))
+	key = key[:32]
+
+	store.AddWithKey(key, captcha)
 
 	return key
 }

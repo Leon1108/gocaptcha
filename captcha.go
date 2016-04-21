@@ -69,6 +69,22 @@ func CreateCaptchaFromConfigFile(configFile string) (*Captcha, error) {
 	return captcha, retErr
 }
 
+//GetTextWithKey 使用指定key来存储验证码，并返回验证码的内容。
+func (captcha *Captcha) GetTextWithKey(key string, length int) (string, error) {
+	var retErr error
+	text, err := captcha.wordManager.Get(length)
+	if nil != err {
+		retErr = err
+	} else {
+		info := new(CaptchaInfo)
+		info.Text = text
+		info.CreateTime = time.Now()
+		info.ShownTimes = 0
+		captcha.store.AddWithKey(key, info)
+	}
+	return text, retErr
+}
+
 //GetKey will generate a key with required length
 func (captcha *Captcha) GetKey(length int) (string, error) {
 	var retErr error
@@ -112,16 +128,15 @@ func (captcha *Captcha) Verify(key, textToVerify string) (bool, string) {
 	return true, ""
 }
 
-//GetImage will generate the binary image data
-func (captcha *Captcha) GetImage(key string) (image.Image, error) {
-
+//GetText will get the content of captcha
+func (captcha *Captcha) GetText(key string) (string, error) {
 	info := captcha.store.Get(key)
 	if nil == info {
-		return nil, errors.New("captcha info not found")
+		return "", errors.New("captcha info not found")
 	}
 
 	if info.CreateTime.Add(captcha.captchaConfig.LifeTime).Before(time.Now()) {
-		return nil, errors.New("captcha expires")
+		return "", errors.New("captcha expires")
 	}
 
 	if captcha.captchaConfig.ChangeTextOnRefresh {
@@ -129,7 +144,7 @@ func (captcha *Captcha) GetImage(key string) (image.Image, error) {
 
 			text, err := captcha.wordManager.Get(len(info.Text))
 			if nil != err {
-				return nil, err
+				return "", err
 			} else {
 				info.Text = text
 			}
@@ -139,10 +154,19 @@ func (captcha *Captcha) GetImage(key string) (image.Image, error) {
 		captcha.store.Update(key, info)
 	}
 
-	cimg := captcha.genImage(info.Text)
-	return cimg, nil
-
+	return info.Text, nil
 }
+
+//GetImage will generate the binary image data
+func (captcha *Captcha) GetImage(key string) (cimg image.Image, err error) {
+	var text string
+	if text, err = captcha.GetText(key); err != nil {
+		return
+	} 
+	cimg = captcha.genImage(text)
+	return
+}
+
 func createStore(config *StoreConfig) (StoreInterface, error) {
 	var store StoreInterface
 	var err error
