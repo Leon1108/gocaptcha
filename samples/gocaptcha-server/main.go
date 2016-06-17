@@ -11,8 +11,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/Leon1108/gocaptcha"
 	"github.com/hanguofeng/config"
-	"github.com/hanguofeng/gocaptcha"
 )
 
 var (

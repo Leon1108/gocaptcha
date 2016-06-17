@@ -72,7 +72,7 @@ func (m *CImage) drawString(text string) *CImage {
 	i := 0
 	for _, s := range text {
 		c.SetFont(m.config.fontManager.GetRandomFont())
-		charX := (int(c.PointToFix32(m.config.FontSize) >> 8)) * i
+		charX := ((int(c.PointToFix32(m.config.FontSize) >> 8)) * i) + 2 // 向右移2个单位，使最左侧字符不要帖这边
 		charY := int(c.PointToFix32(m.config.FontSize) >> 8)
 		charPt := freetype.Pt(charX, charY)
 		c.DrawString(string(s), charPt)
