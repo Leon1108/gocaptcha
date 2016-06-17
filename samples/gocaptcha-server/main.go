@@ -74,7 +74,8 @@ func VerifyHandler(w http.ResponseWriter, r *http.Request) {
 	code := r.FormValue("code")
 	callback := html.EscapeString(r.FormValue("callback"))
 
-	retstr := "{error_no:%d,error_msg:'%s',key:'%s'}"
+	//retstr := "{error_no:%d,error_msg:'%s',key:'%s'}"
+	retstr := "{\"error_no\":%d,\"error_msg\":\"%s\",\"key\":\"%s\"}"
 	error_no := 0
 	error_msg := ""
 
