@@ -46,7 +46,8 @@ func GetKeyHandler(w http.ResponseWriter, r *http.Request) {
 	callback := html.EscapeString(r.FormValue("callback"))
 
 	key, err := ccaptcha.GetKey(4)
-	retstr := "{error_no:%d,error_msg:'%s',key:'%s'}"
+	//retstr := "{error_no:%d,error_msg:'%s',key:'%s'}"
+	retstr := "{\"error_no\":%d,\"error_msg\":\"%s\",\"key\":\"%s\"}"
 
 	error_no := 0
 	error_msg := ""
